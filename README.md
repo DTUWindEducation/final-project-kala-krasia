@@ -15,6 +15,26 @@ Team: [ADD TEXT HERE!]
 
 [ADD TEXT HERE!]
 
+wind-resource-assessment/
+├── src/
+│   ├── __init__.py
+│   ├── data_loader.py        # load and preprocess ERA5 NetCDF data
+│   ├── wind_analysis.py      # wind speed, direction, interpolation, vertical extrapolation
+│   ├── distribution.py       # Weibull fit and histogram
+│   ├── plotting.py           # wind rose, distribution plots
+│   └── aep.py                # AEP calculation using turbine power curves
+│
+├── inputs/                   # NetCDF + turbine power curve CSVs
+│   └── ...
+├── examples/                 # Scripts that demonstrate your functionality
+│   └── ...
+├── tests/                    # Tests (e.g., pytest)
+│   └── ...
+├── README.md
+├── requirements.txt
+└── .gitignore
+
+
 ## Peer review
 
 [ADD TEXT HERE!]

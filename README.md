@@ -15,6 +15,39 @@ Team: [ADD TEXT HERE!]
 
 [ADD TEXT HERE!]
 
+final-project/
+├── src/
+│   ├── __init__.py
+│   ├── data_loader.py          # Load NetCDF4 files
+│   ├── wind_analysis.py        # Wind speed, wind direction, extrapolation
+│   ├── interpolation.py        # Spatial interpolation (for Horns Rev 1)
+│   ├── statistics.py           # Weibull fitting
+│   ├── plotting.py             # Plots (histogram, wind rose)
+│   ├── aep_calculator.py       # AEP calculation
+│
+├── inputs/
+│   ├── wind_data/              # Your NetCDF wind data here
+│   │   ├── 1997-1999.nc
+│   │   ├── 2000-2002.nc
+│   │   └── etc.
+│   ├── turbine_data/           # Your turbine CSV power curves
+│       ├── NREL_5MW.csv
+│       └── NREL_15MW.csv
+│
+├── examples/                   # Test scripts for your functions
+│   ├── test_loader.py
+│   ├── test_analysis.py
+│   └── etc.
+│
+├── outputs/                    # Your generated plots
+│
+├── tests/                      # Formal unit tests
+│
+├── README.md
+├── requirements.txt
+└── .gitignore
+
+
 ## Peer review
 
 [ADD TEXT HERE!]

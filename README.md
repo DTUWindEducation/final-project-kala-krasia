@@ -46,6 +46,7 @@ final-project/
 ├── README.md
 ├── requirements.txt
 └── .gitignore
+ΜΗΝ ΞΕΧΑΣΟΥΜΕ PIP INSTALL XARRAY, NUMPY, netCDF4
 
 
 ## Peer review

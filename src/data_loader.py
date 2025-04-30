@@ -1,6 +1,10 @@
 from pathlib import Path
 import xarray as xr
 import numpy as np
+from scipy.stats import weibull_min
+import pandas as pd
+import matplotlib.pyplot as plt
+from windrose import WindroseAxes
 class WindDataLoader:
     """
     A class to load and process ERA5 wind data from NetCDF4 files.
@@ -149,3 +153,80 @@ class WindDataLoader:
         )
 
         return interpolated.values
+
+# power_law.py
+
+def extrapolate_wind_speed(u_ref, z_ref, z_target, alpha=0.14):
+    """
+    Extrapolate wind speed to a different height using the power law profile.
+
+    Parameters:
+    -----------
+    u_ref : float or np.ndarray
+        Wind speed at the reference height [m/s].
+    z_ref : float
+        Reference height [m].
+    z_target : float
+        Target height to extrapolate to [m].
+    alpha : float
+        Power law exponent (default is 0.14, typical for neutral conditions).
+
+    Returns:
+    --------
+    float or np.ndarray
+        Wind speed at the target height [m/s].
+    """
+    if z_ref <= 0 or z_target <= 0:
+        raise ValueError("Heights must be positive numbers.")
+    if alpha < 0:
+        raise ValueError("Alpha should be non-negative.")
+
+    u_target = u_ref * (z_target / z_ref) ** alpha
+    return u_target
+
+def fit_weibull(wind_speeds):
+    wind_speeds_clean = wind_speeds.flatten()
+    wind_speeds_clean = wind_speeds_clean[~np.isnan(wind_speeds_clean)]
+    shape, loc, scale = weibull_min.fit(wind_speeds_clean, floc=0)
+    return shape, scale
+
+def plot_wind_speed_distribution(wind_speeds, shape, scale, bins=30):
+    wind_speeds_clean = wind_speeds.flatten()
+    wind_speeds_clean = wind_speeds_clean[~np.isnan(wind_speeds_clean)]
+    plt.figure()
+    plt.hist(wind_speeds_clean, bins=bins, density=True, alpha=0.6, label="Histogram")
+    u = np.linspace(0, np.max(wind_speeds_clean), 100)
+    pdf = weibull_min.pdf(u, shape, scale=scale)
+    plt.plot(u, pdf, 'r-', label=f"Weibull Fit\nk={shape:.2f}, A={scale:.2f}")
+    plt.xlabel("Wind Speed (m/s)")
+    plt.ylabel("Probability Density")
+    plt.title("Wind Speed Distribution with Weibull Fit")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+def plot_wind_rose(wind_speeds, wind_directions, num_sectors=16):
+    ax = WindroseAxes.from_ax()
+    ax.bar(wind_directions, wind_speeds, normed=True, opening=0.8, edgecolor='white', nsector=num_sectors)
+    ax.set_legend()
+    plt.title("Wind Rose Diagram")
+    #plt.tight_layout()
+    plt.show()
+def compute_aep(wind_speeds, power_curve_wind, power_curve_power, availability=1.0):
+    """
+    Compute AEP from wind speed time series and a turbine power curve.
+
+    Parameters:
+        wind_speeds (np.ndarray): Wind speed time series [m/s].
+        power_curve_wind (np.ndarray): Wind speeds from the power curve [m/s].
+        power_curve_power (np.ndarray): Corresponding power outputs [kW].
+        availability (float): Turbine availability factor (default = 1.0).
+
+    Returns:
+        float: Annual Energy Production in MWh.
+    """
+    wind_speeds_clean = wind_speeds.flatten()
+    wind_speeds_clean = wind_speeds_clean[~np.isnan(wind_speeds_clean)]
+    power_output = np.interp(wind_speeds_clean, power_curve_wind, power_curve_power)
+    total_energy_kwh = np.sum(power_output) * availability
+    return total_energy_kwh / 1000  # Convert to MWh
+ 

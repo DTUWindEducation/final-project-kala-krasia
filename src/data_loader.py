@@ -229,4 +229,36 @@ def compute_aep(wind_speeds, power_curve_wind, power_curve_power, availability=1
     power_output = np.interp(wind_speeds_clean, power_curve_wind, power_curve_power)
     total_energy_kwh = np.sum(power_output) * availability
     return total_energy_kwh / 1000  # Convert to MWh
- 
+def extrapolate_wind_log(u_ref, z_ref, z_target, z0=0.03):
+    """
+    Extrapolate wind speed using the logarithmic profile.
+
+    Parameters:
+        u_ref (float or np.ndarray): Wind speed at reference height [m/s]
+        z_ref (float): Reference height [m]
+        z_target (float): Target height [m]
+        z0 (float): Surface roughness length [m] (default = 0.03 for offshore)
+
+    Returns:
+        float or np.ndarray: Wind speed at z_target [m/s]
+    """
+    if z_ref <= z0 or z_target <= z0:
+        raise ValueError("Heights must be greater than roughness length z0.")
+    return u_ref * np.log(z_target / z0) / np.log(z_ref / z0)
+
+# Extra Function 2: Compute time series power output from wind speeds
+def compute_power_time_series(wind_speeds, power_curve_wind, power_curve_power):
+    """
+    Compute turbine power output time series from wind speeds using the power curve.
+
+    Parameters:
+        wind_speeds (np.ndarray): Wind speed time series [m/s].
+        power_curve_wind (np.ndarray): Wind speed values in the power curve [m/s].
+        power_curve_power (np.ndarray): Corresponding power outputs [kW].
+
+    Returns:
+        np.ndarray: Power output time series [kW].
+    """
+    wind_speeds_clean = wind_speeds.flatten()
+    wind_speeds_clean = wind_speeds_clean[~np.isnan(wind_speeds_clean)]
+    return np.interp(wind_speeds_clean, power_curve_wind, power_curve_power)

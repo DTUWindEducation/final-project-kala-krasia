@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys
-
+import numpy as np
 # Add the project root (one level above this file) to sys.path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
@@ -11,19 +11,16 @@ from src.data_loader import WindDataLoader
 loader = WindDataLoader("inputs")
 
 dataset = loader.load_all()
+def test_wind_speed_and_direction():
+    input_dir = Path(__file__).resolve().parents[1] / "inputs"
+    loader = WindDataLoader(input_dir)
+    loader.load_all()
 
-#Compute wind speed at 10 meters
-wind_speed_10 = loader.compute_wind_speed(10)
-print("First 5 wind speeds at 10m:", wind_speed_10[:5])
+    for height in [10, 100]:
+        speed = loader.compute_wind_speed(height)
+        direction = loader.compute_wind_direction(height)
 
-# Compute wind speed at 100 meters
-wind_speed_100 = loader.compute_wind_speed(100)
-print("First 5 wind speeds at 100m:", wind_speed_100[:5])
-
-# Wind direction at 10m
-wind_direction_10 = loader.compute_wind_direction(10)
-print("First 5 wind directions at 10m:", wind_direction_10[:5])
-
-# Wind direction at 100m
-wind_direction_100 = loader.compute_wind_direction(100)
-print("First 5 wind directions at 100m:", wind_direction_100[:5])
+        assert speed is not None and len(speed) > 0
+        assert direction is not None and len(direction) > 0
+        assert np.all(speed > 0)
+        assert np.all((direction >= 0) & (direction <= 360))

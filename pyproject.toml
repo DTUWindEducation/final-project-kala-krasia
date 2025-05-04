@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wind-resource-assessment"
+version = "0.1.0"
+description = "Wind resource assessment using ERA5 reanalysis data"
+authors = [
+    { name = "Paraskevi Simiti", email = "s242807@dtu.dk" },
+    { name = "Ioanna Fouskari", email = "s242895@dtu.dk" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+dependencies = [
+    "xarray",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "scipy",
+    "windrose"
+]
+
+[project.urls]
+Homepage = "https://github.com/DTUWindEducation/final-project-kala-krasia"

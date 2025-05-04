@@ -1,0 +1,7 @@
+numpy
+pandas
+matplotlib
+xarray
+scipy
+windrose
+h5netcdf

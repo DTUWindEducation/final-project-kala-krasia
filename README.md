@@ -56,7 +56,7 @@ Check the `outputs/` directory for:
 ```bash
 pytest tests/
 ```
-Tests ensure accuracy of extrapolation, Weibull fitting, AEP computation, and data loading.
+Tests ensure the accuracy of extrapolation, Weibull fitting, AEP computation, and data loading.
 
 ---
 

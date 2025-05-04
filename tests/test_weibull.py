@@ -9,9 +9,15 @@ from src.data_loader import fit_weibull
 # Correct path 
 loader = WindDataLoader("inputs")
 dataset = loader.load_all()
-# examples/test_fit_weibull.py
-u10 = loader.compute_wind_speed(10)
+def test_fit_weibull():
+    input_dir = Path(__file__).resolve().parents[1] / "inputs"
+    loader = WindDataLoader(input_dir)
+    loader.load_all()
 
-shape, scale = fit_weibull(u10)
+    u10 = loader.compute_wind_speed(10)
+    shape, scale = fit_weibull(u10)
 
-print(f"Weibull parameters: Shape (k) = {shape:.2f}, Scale (A) = {scale:.2f}")
+    assert shape > 0
+    assert scale > 0
+    assert isinstance(shape, float)
+    assert isinstance(scale, float)
